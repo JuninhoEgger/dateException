@@ -71,17 +71,12 @@ public class Main {
             Object checkoutYear = showInputDialog(null, "CHECKOUT YEAR", HOTEL_INFO, QUESTION_MESSAGE, null, years, years[0]);
             checkOut = simpleDateFormat.parse(checkoutDay.toString() + "/" + checkoutMonth.toString() + "/" + checkoutYear.toString());
 
-            Date now = new Date();
-
-            if (checkIn.before(now) || checkOut.before(now)) {
-                showMessageDialog(null, "ERROR IN RESERVATION: RESERVATION DATES FOR UPDATES MUST BE FUTURE");
-            } else if (!checkOut.after(checkIn)) {
-                showMessageDialog(null, "Error in reservation: Checkout date must be after checkin date");
+            String error = reservation.updateDates(checkIn, checkOut);
+            if (error != null) {
+                showMessageDialog(null, "ERROR IN RESERVATION: " + error);
             } else {
-                reservation.updateDates(checkIn, checkOut);
                 showMessageDialog(null, reservation);
             }
         }
-
     }
 }
