@@ -8,7 +8,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public class Reservation {
 
-    private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     private Integer roomNumber;
     private Date checkIn;
@@ -53,6 +53,7 @@ public class Reservation {
     public String toString() {
         return "Número do quarto: " + roomNumber +
                 "\n Data de check-in: " + simpleDateFormat.format(checkIn) +
-                "\n Data de check-out: " + simpleDateFormat.format(checkOut);
+                "\n Data de check-out: " + simpleDateFormat.format(checkOut) +
+                "\n Quantidade de noites: " + duration();
     }
 }
