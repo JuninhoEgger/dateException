@@ -1,6 +1,7 @@
 package main;
 
 import model.entities.reservation.Reservation;
+import model.exceptions.DomainException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,7 +15,7 @@ import static java.util.Calendar.*;
 import static javax.swing.JOptionPane.*;
 
 public class Main {
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) {
 
         final String HOTEL_INFO = "OVERLOOK HOTEL";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -41,24 +42,21 @@ public class Main {
         }
         Object[] years = yearsList.toArray();
 
-        Integer number = valueOf(showInputDialog("Room number"));
+        try {
+            Integer number = valueOf(showInputDialog("Room number"));
 
-        Object checkInDay = showInputDialog(null, "CHECKIN DAY", HOTEL_INFO, QUESTION_MESSAGE, null, days, days[day - 1]);
-        Object checkInMonth = showInputDialog(null, "CHECKIN MONTH", HOTEL_INFO, QUESTION_MESSAGE, null, months, months[month]);
-        Object checkInYear = showInputDialog(null, "CHECKIN YEAR", HOTEL_INFO, QUESTION_MESSAGE, null, years, years[0]);
-        Date checkIn = simpleDateFormat.parse(checkInDay.toString() + "/" + checkInMonth.toString() + "/" + checkInYear.toString());
+            Object checkInDay = showInputDialog(null, "CHECKIN DAY", HOTEL_INFO, QUESTION_MESSAGE, null, days, days[day - 1]);
+            Object checkInMonth = showInputDialog(null, "CHECKIN MONTH", HOTEL_INFO, QUESTION_MESSAGE, null, months, months[month]);
+            Object checkInYear = showInputDialog(null, "CHECKIN YEAR", HOTEL_INFO, QUESTION_MESSAGE, null, years, years[0]);
+            Date checkIn = simpleDateFormat.parse(checkInDay.toString() + "/" + checkInMonth.toString() + "/" + checkInYear.toString());
 
-        Object checkOutDay = showInputDialog(null, "CHECKOUT DAY", HOTEL_INFO, QUESTION_MESSAGE, null, days, days[day - 1]);
-        Object checkOutMonth = showInputDialog(null, "CHECKOUT MONTH", HOTEL_INFO, QUESTION_MESSAGE, null, months, months[month]);
-        Object checkOutYear = showInputDialog(null, "CHECKOUT YEAR", HOTEL_INFO, QUESTION_MESSAGE, null, years, years[0]);
-        Date checkOut = simpleDateFormat.parse(checkOutDay.toString() + "/" + checkOutMonth.toString() + "/" + checkOutYear.toString());
+            Object checkOutDay = showInputDialog(null, "CHECKOUT DAY", HOTEL_INFO, QUESTION_MESSAGE, null, days, days[day - 1]);
+            Object checkOutMonth = showInputDialog(null, "CHECKOUT MONTH", HOTEL_INFO, QUESTION_MESSAGE, null, months, months[month]);
+            Object checkOutYear = showInputDialog(null, "CHECKOUT YEAR", HOTEL_INFO, QUESTION_MESSAGE, null, years, years[0]);
+            Date checkOut = simpleDateFormat.parse(checkOutDay.toString() + "/" + checkOutMonth.toString() + "/" + checkOutYear.toString());
 
-        if (!checkOut.after(checkIn)) {
-            showMessageDialog(null, "Error in reservation: Checkout date must be after checkin date");
-        } else {
             Reservation reservation = new Reservation(number, checkIn, checkOut);
             showMessageDialog(null, reservation);
-
             showMessageDialog(null, "ATUALIZE OS DADOS");
 
             Object checkinDay = showInputDialog(null, "CHECKIN DAY", HOTEL_INFO, QUESTION_MESSAGE, null, days, days[day - 1]);
@@ -71,12 +69,14 @@ public class Main {
             Object checkoutYear = showInputDialog(null, "CHECKOUT YEAR", HOTEL_INFO, QUESTION_MESSAGE, null, years, years[0]);
             checkOut = simpleDateFormat.parse(checkoutDay.toString() + "/" + checkoutMonth.toString() + "/" + checkoutYear.toString());
 
-            String error = reservation.updateDates(checkIn, checkOut);
-            if (error != null) {
-                showMessageDialog(null, "ERROR IN RESERVATION: " + error);
-            } else {
-                showMessageDialog(null, reservation);
-            }
+            reservation.updateDates(checkIn, checkOut);
+            showMessageDialog(null, reservation);
+        } catch (ParseException e) {
+            showMessageDialog(null, "INVALID DATE FORMAT!");
+        } catch (DomainException e) {
+            showMessageDialog(null, "ERROR IN RESERVATION: " + e.getMessage());
+        } catch (RuntimeException e) {
+            showMessageDialog(null, "UNEXPECTED ERROR!");
         }
     }
 }
